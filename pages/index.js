@@ -1,65 +1,93 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
+import { useState, useEffect, useMemo } from "react";
+import MicRecorder from "mic-recorder-to-mp3";
 
 export default function Home() {
+  const [isRecording, setIsRecording] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const Mp3Recorder = useMemo(() => new MicRecorder({ bitRate: 128 }), []);
+  const [audioURL, setAudioURL] = useState("");
+
+  useEffect(() => {
+    navigator.getUserMedia(
+      { audio: true },
+      () => setIsBlocked(false),
+      () => setIsBlocked(true)
+    );
+  }, []);
+
+  const start = () => {
+    if (isBlocked) {
+      alert(
+        "Permission Denied. Please allow app to record audio. GO to you settings."
+      );
+    } else {
+      Mp3Recorder.start()
+        .then(() => {
+          setIsRecording(true);
+        })
+        .catch((e) => console.error(e));
+    }
+  };
+
+  const stop = () => {
+    Mp3Recorder.stop()
+      .getMp3()
+      .then(([buffer, blob]) => {
+        const blobURL = URL.createObjectURL(blob);
+        setIsRecording(false);
+        setAudioURL(blobURL);
+      })
+      .catch((e) => console.log(e));
+  };
+  // function startRecording() {
+  //   let device = navigator.mediaDevices.getUserMedia({ audio: true });
+  //   let items = [];
+  //   device.then((stream) => {
+  //     let recorder = new MediaRecorder(stream);
+  //     recorder.ondataavailable = (e) => {
+  //       items.push(e.data);
+  //       if (recorder.state == "inactive") {
+  //         var blob = new Blob(items, { type: "audio/webm" });
+  //         setAudioURL(URL.createObjectURL(blob));
+  //       }
+  //     };
+
+  //     recorder.start();
+
+  //     setTimeout(() => {
+  //       recorder.stop();
+  //     }, 5000);
+  //   });
+  // }
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>Voice Recorder</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
+      <h2>Group 4 Information Theory - Voice Recorder</h2>
+      <div className={styles.audio} id="audio">
+        <div style={{ display: "flex" }}>
+          <button
+            style={{ marginRight: "10px" }}
+            className={styles.btn}
+            onClick={() => start()}
+            disabled={isRecording}
           >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
+            Start
+          </button>
+          <button
+            className={styles.btn}
+            onClick={() => stop()}
+            disabled={!isRecording}
           >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+            Stop
+          </button>
         </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+        {audioURL && <audio controls="controls" src={audioURL} />}
+      </div>
     </div>
-  )
+  );
 }
