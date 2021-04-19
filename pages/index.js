@@ -86,7 +86,7 @@ export default function Home() {
             Stop
           </button>
         </div>
-        {audioURL && <audio controls="controls" src={audioURL} />}
+        <audio controls="controls" src={audioURL} />
       </div>
     </div>
   );
