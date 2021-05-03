@@ -41,33 +41,16 @@ export default function Home() {
       })
       .catch((e) => console.log(e));
   };
-  // function startRecording() {
-  //   let device = navigator.mediaDevices.getUserMedia({ audio: true });
-  //   let items = [];
-  //   device.then((stream) => {
-  //     let recorder = new MediaRecorder(stream);
-  //     recorder.ondataavailable = (e) => {
-  //       items.push(e.data);
-  //       if (recorder.state == "inactive") {
-  //         var blob = new Blob(items, { type: "audio/webm" });
-  //         setAudioURL(URL.createObjectURL(blob));
-  //       }
-  //     };
 
-  //     recorder.start();
-
-  //     setTimeout(() => {
-  //       recorder.stop();
-  //     }, 5000);
-  //   });
-  // }
   return (
     <div className={styles.container}>
       <Head>
         <title>Voice Recorder</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h2>Group 4 Information Theory - Voice Recorder</h2>
+      <h2 style={{ color: "white" }}>
+        Group 4 Information Theory - Voice Recorder
+      </h2>
       <div className={styles.audio} id="audio">
         <div style={{ display: "flex" }}>
           <button
@@ -88,6 +71,28 @@ export default function Home() {
         </div>
         <audio controls="controls" src={audioURL} />
       </div>
+      z
     </div>
   );
 }
+
+// function startRecording() {
+//   let device = navigator.mediaDevices.getUserMedia({ audio: true });
+//   let items = [];
+//   device.then((stream) => {
+//     let recorder = new MediaRecorder(stream);
+//     recorder.ondataavailable = (e) => {
+//       items.push(e.data);
+//       if (recorder.state == "inactive") {
+//         var blob = new Blob(items, { type: "audio/webm" });
+//         setAudioURL(URL.createObjectURL(blob));
+//       }
+//     };
+
+//     recorder.start();
+
+//     setTimeout(() => {
+//       recorder.stop();
+//     }, 5000);
+//   });
+// }
