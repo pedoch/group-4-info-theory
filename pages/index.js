@@ -48,7 +48,7 @@ export default function Home() {
         <title>Voice Recorder</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h2 style={{ color: "white" }}>
+      <h2 className={styles.title}>
         Group 4 Information Theory - Voice Recorder
       </h2>
       <div className={styles.audio} id="audio">
